@@ -1,5 +1,6 @@
 #include "stringsLib.h"
 #include <algorithm>
+#include <string.h> 
 using namespace std;
 
 const char ZERO_CH = '0', STR_END_CH = '\0';
@@ -28,8 +29,6 @@ void sortAndReplace(char* inputString) {
     }
     result[pos] = STR_END_CH;
 
-    //strcpy(inputString, result);
-
     int lenResult = static_cast<int>(strlen(result));
     copy(result, result+lenResult, inputString);
 }
@@ -37,7 +36,7 @@ void sortAndReplace(char* inputString) {
 
 long long sumNumbers(const char* inputString) {
     long long sum = 0;
-    long long curNumber = 0.0;
+    long long curNumber = 0;
     bool isNumber = false;
 
     const char NINE_CH = '9';
@@ -66,13 +65,11 @@ long long sumNumbers(const char* inputString) {
     return sum;
 }
 
-bool checkString(const char* inputString) {
+bool checkString(const char* inputString, long long sum) {
+    if (sum == 0) { return false; }
+
     int length = static_cast<int>(strlen(inputString));
     if (length <= 2) { return false; }
-
-    long long sum = sumNumbers(inputString);
-
-    if (sum == 0) { return false; }
 
     if (sum % 32 == 0) { return true; }
 

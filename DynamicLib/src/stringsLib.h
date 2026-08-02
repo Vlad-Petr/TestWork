@@ -7,7 +7,7 @@ extern "C" {
 #endif
 	void sortAndReplace(char* inputString);
 	long long sumNumbers(const char* inputString);
-	bool checkString(const char* inputString);
+	bool checkString(const char* inputString, long long sum);
 
 #ifdef __cplusplus
 }
