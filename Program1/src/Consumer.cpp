@@ -30,15 +30,16 @@ void Consumer::processData(const string& data) {
     cout << "\n=== Поток 2 получил данные ===" << endl;
     cout << "Данные: " << data << endl;
     
+    // Вычисляем сумму
     long long sum = sumNumbers(data.c_str());
     cout << "Сумма чисел: " << sum << endl;
     
-    string messageToSend = to_string(sum);
-    
-    if (network.sendData(messageToSend)) {
-        cout << "[Сеть] Результат успешно передан в Программу 2." << endl;
+    if (network.sendData(data, sum)) {
+        cout << "[Сеть] Данные успешно переданы в Программу 2." << endl;
+        cout << "  Отправлено: \"" << data << "|" << sum << "\"" << endl;
     } else {
-        cout << "[Сеть] Не удалось передать данные (ожидание перезапуска Программы 2...)." << endl;
+        cout << "[Сеть] Не удалось передать данные." << endl;
+        cout << "Программа 2 будет ожидать переподключения..." << endl;
     }
     
     cout << "================================\n" << endl;

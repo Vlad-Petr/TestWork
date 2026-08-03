@@ -6,11 +6,13 @@
 #include <arpa/inet.h>   // Для inet_ntoa
 #include <cstring>       // Для memset
 
+using namespace std;
+
 SocketServer::SocketServer(int port) : 
 server_fd(-1), client_fd(-1), port(port), is_connected(false) {
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
-        std::cerr << "Ошибка создания сокета" << std::endl;
+        cerr << "Ошибка создания сокета" << endl;
         return;
     }
 
@@ -23,20 +25,20 @@ server_fd(-1), client_fd(-1), port(port), is_connected(false) {
     address.sin_port = htons(port);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        std::cerr << "Ошибка привязки bind к порту " << port << std::endl;
+        cerr << "Ошибка привязки bind к порту " << port << endl;
         close(server_fd);
         server_fd = -1;
         return;
     }
 
     if (listen(server_fd, 3) < 0) {
-        std::cerr << "Ошибка перевода сокета в режим прослушивания listen" << std::endl;
+        cerr << "Ошибка перевода сокета в режим прослушивания listen" << endl;
         close(server_fd);
         server_fd = -1;
         return;
     }
 
-    std::cout << "[Сеть] Сервер запущен и ожидает подключений на порту " << port << "..." << std::endl;
+    cout << "[Сеть] Сервер запущен и ожидает подключений на порту " << port << "..." << endl;
 }
 
 SocketServer::~SocketServer() {
@@ -53,39 +55,60 @@ bool SocketServer::waitForConnection() {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    std::cout << "[Сеть] Ожидание подключения Программы 2..." << std::endl;
+    cout << "[Сеть] Ожидание подключения Программы 2..." << endl;
     
     client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
     
     if (client_fd < 0) {
-        std::cerr << "Ошибка приёма соединения accept" << std::endl;
+        cerr << "Ошибка приёма соединения accept" << endl;
         return false;
     }
 
     is_connected = true;
-    std::cout << "[Сеть] Программа 2 успешно подключилась!" << std::endl;
+    cout << "[Сеть] Программа 2 успешно подключилась!" << endl;
     return true;
 }
 
-bool SocketServer::sendData(const std::string& data) {
+
+bool SocketServer::sendData(const string& input_string, long long sum) {
     if (!is_connected || client_fd < 0) {
         if (!waitForConnection()) {
             return false;
         }
     }
 
-    std::string payload = data + "\n";
+    string payload = input_string + "|" + to_string(sum) + "\n";
     
     ssize_t bytes_sent = send(client_fd, payload.c_str(), payload.length(), 0);
     
     if (bytes_sent <= 0) {
-        std::cout << "[Сеть] Программа 2 отключилась." << std::endl;
+        cout << "[Сеть] Программа 2 отключилась." << endl;
         disconnectClient();
         return false;
     }
     
     return true;
 }
+
+// bool SocketServer::sendData(const string& data) {
+//     if (!is_connected || client_fd < 0) {
+//         if (!waitForConnection()) {
+//             return false;
+//         }
+//     }
+
+//     string payload = data + "\n";
+    
+//     ssize_t bytes_sent = send(client_fd, payload.c_str(), payload.length(), 0);
+    
+//     if (bytes_sent <= 0) {
+//         cout << "[Сеть] Программа 2 отключилась." << endl;
+//         disconnectClient();
+//         return false;
+//     }
+    
+//     return true;
+// }
 
 void SocketServer::disconnectClient() {
     if (client_fd >= 0) {

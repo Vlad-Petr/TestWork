@@ -1,0 +1,3 @@
+/media/vladislav/6A34A8FA34A8CB01/TestWork/DynamicLib/build/CMakeFiles/StringsLib.dir
+/media/vladislav/6A34A8FA34A8CB01/TestWork/DynamicLib/build/CMakeFiles/edit_cache.dir
+/media/vladislav/6A34A8FA34A8CB01/TestWork/DynamicLib/build/CMakeFiles/rebuild_cache.dir

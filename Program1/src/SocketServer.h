@@ -17,7 +17,8 @@ public:
 
     bool waitForConnection();
 
-    bool sendData(const std::string& data);
+    //bool sendData(const std::string& data);
+    bool sendData(const std::string& input_string, long long sum);
 
     void disconnectClient();
 };

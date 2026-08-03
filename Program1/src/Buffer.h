@@ -7,26 +7,26 @@
 
 class Buffer {
 private:
-    string data;
+    std::string data;
     bool hasData;
     bool shutdownFlag;
-    mutex mtx;
-    condition_variable cv;
+    std::mutex mtx;
+    std::condition_variable cv;
 
 public:
     Buffer() : hasData(false), shutdownFlag(false) {}
 
-    void putString(const string& input) {
-        unique_lock<mutex> lock(mtx);
+    void putString(const std::string& input) {
+        std::unique_lock<std::mutex> lock(mtx);
         if (shutdownFlag) return;
         
         data = input;
         hasData = true;
-        cv.notify_one();  // Будим поток 2
+        cv.notify_one(); 
     }
 
-    string getString() {
-        unique_lock<mutex> lock(mtx);
+    std::string getString() {
+        std::unique_lock<std::mutex> lock(mtx);
 
         cv.wait(lock, [this] { return hasData || shutdownFlag; });
         
@@ -34,14 +34,14 @@ public:
             return ""; 
         }
         
-        string result = data;
+        std::string result = data;
         data.clear();
         hasData = false;
         return result;
     }
 
     void shutdown() {
-        unique_lock<mutex> lock(mtx);
+        std::unique_lock<std::mutex> lock(mtx);
         shutdownFlag = true;
         cv.notify_all();  
     }
